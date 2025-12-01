@@ -2,8 +2,10 @@
 
 > Ich schreibe nicht nur Code, ich erschaffe Ökosysteme.
 
-Website für **DEVmatrose** - Senior Developer & Software-Architekt für digitale Ökosysteme.
+# [DEVmatrose bei GitHub](https://github.com/DEVmatrose](https://github.com/DEVmatrose)
 
+Website für **DEVmatrose** - Senior Developer & Software-Architekt für digitale Ökosysteme.
+## [DEVmatrose Webseite](https://github.com/DEVmatrose)
 ## 🕸️ Features
 
 - **Interaktives Spiderweb Canvas**: Reaktiver Netzwerk-Hintergrund mit Mausverfolgung
