@@ -54,9 +54,22 @@ const handleNavigate = (event) => {
   }
 }
 
+const checkUrlForArticle = () => {
+  const urlParams = new URLSearchParams(window.location.hash.split('?')[1])
+  const articleSlug = urlParams.get('article')
+  
+  if (articleSlug === 'vom-code-zum-architekten') {
+    selectedPost.value = {
+      component: '02-12-25-Vom-Code-zum-Architekten',
+      title: 'Vom Coder zum Architekten'
+    }
+  }
+}
+
 onMounted(() => {
   window.addEventListener('open-blog-post', handleOpenBlogPost)
   window.addEventListener('navigate', handleNavigate)
+  checkUrlForArticle()
 })
 
 onUnmounted(() => {

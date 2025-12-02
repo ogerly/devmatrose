@@ -22,14 +22,31 @@
           <span class="text-off-white/60">Vom Coder zum Architekten</span>
         </nav>
 
-        <!-- Meta Info -->
-        <div class="flex flex-wrap gap-4 items-center mb-6 text-sm">
-          <span class="badge badge-accent glow-pulse">Featured</span>
-          <span class="text-cyber-cyan">KI & Architektur</span>
-          <span class="text-off-white/40">•</span>
-          <span class="text-off-white/60">02. Dezember 2025</span>
-          <span class="text-off-white/40">•</span>
-          <span class="text-off-white/60">10 min Lesezeit</span>
+        <!-- Meta Info & Share -->
+        <div class="flex flex-wrap gap-4 items-center justify-between mb-6 text-sm">
+          <div class="flex flex-wrap gap-4 items-center">
+            <span class="badge badge-accent glow-pulse">Featured</span>
+            <span class="text-cyber-cyan">KI & Architektur</span>
+            <span class="text-off-white/40">•</span>
+            <span class="text-off-white/60">02. Dezember 2025</span>
+            <span class="text-off-white/40">•</span>
+            <span class="text-off-white/60">10 min Lesezeit</span>
+          </div>
+          
+          <!-- Share Link -->
+          <button 
+            @click="copyArticleLink" 
+            class="btn btn-xs btn-outline border-cyber-cyan text-cyber-cyan hover:bg-cyber-cyan hover:text-void"
+            :class="{ 'btn-success': linkCopied }"
+          >
+            <svg v-if="!linkCopied" class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            <svg v-else class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            {{ linkCopied ? 'Link kopiert!' : 'Link teilen' }}
+          </button>
         </div>
 
         <!-- Title -->
@@ -334,6 +351,22 @@ const tags = ref([
 const basePath = import.meta.env.BASE_URL
 const heroImage = computed(() => `${basePath}images/blog/architekten-hero.png`)
 const previewImage = computed(() => `${basePath}images/blog/architekten-preview.png`)
+
+const linkCopied = ref(false)
+
+const copyArticleLink = async () => {
+  // Use static HTML page for better social media previews
+  const articleUrl = `${window.location.origin}${basePath}blog-vom-code-zum-architekten.html`
+  try {
+    await navigator.clipboard.writeText(articleUrl)
+    linkCopied.value = true
+    setTimeout(() => {
+      linkCopied.value = false
+    }, 3000)
+  } catch (err) {
+    console.error('Failed to copy link:', err)
+  }
+}
 
 const navigateToHome = () => {
   window.dispatchEvent(new CustomEvent('navigate', { detail: 'home' }))
