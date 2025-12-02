@@ -77,14 +77,17 @@ const getImageUrl = (path) => {
 }
 
 const getArticleUrl = () => {
-  const basePath = import.meta.env.BASE_URL
   // Map von slug zu HTML-Dateinamen
   const htmlPages = {
     'vom-code-zum-architekten': 'blog-vom-code-zum-architekten.html'
   }
   
   const htmlFile = htmlPages[props.post.slug]
-  return htmlFile ? `${basePath}${htmlFile}` : '#blog'
+  if (htmlFile) {
+    // Absolute URL für GitHub Pages
+    return `https://ogerly.github.io/devmatrose/${htmlFile}`
+  }
+  return '#blog'
 }
 
 const formatDate = (dateString) => {
