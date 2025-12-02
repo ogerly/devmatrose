@@ -1,7 +1,17 @@
 <template>
   <div class="min-h-screen bg-void text-off-white">
+    <!-- Hero Image -->
+    <div class="relative w-full h-96 overflow-hidden">
+      <img 
+        src="/images/blog/architekten-hero.png" 
+        alt="Software-Architektin visualisiert Whitepaper und Architektur-Entscheidungen"
+        class="w-full h-full object-cover opacity-60"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-void/50 to-void"></div>
+    </div>
+    
     <!-- Hero Section -->
-    <div class="relative bg-gradient-to-b from-void via-void/95 to-void">
+    <div class="relative bg-gradient-to-b from-void via-void/95 to-void -mt-32">
       <div class="max-w-4xl mx-auto px-4 py-16 sm:py-20">
         <!-- Breadcrumb -->
         <nav class="text-sm text-cyber-cyan/60 mb-8">
@@ -118,6 +128,19 @@
         <h2 class="text-3xl font-bold text-copper-orange mt-16 mb-6">
           Mein System: Whitepaper → Workpaper → Agenten
         </h2>
+        
+        <!-- Content Image -->
+        <figure class="my-12">
+          <img 
+            src="/images/blog/architekten-preview.png" 
+            alt="Fraktale Software-Architektur mit Source of Truth im Zentrum"
+            class="w-full rounded-lg border border-cyber-cyan/30 shadow-2xl shadow-cyber-cyan/20"
+          />
+          <figcaption class="text-center text-sm text-off-white/60 mt-4">
+            Fraktale Software-Architektur: Ein Source of Truth verzweigt sich in Module, Submodule und Services
+          </figcaption>
+        </figure>
+        
         <p class="mb-8">Heute läuft jedes Projekt bei mir nach demselben Muster:</p>
 
         <h3 class="text-2xl font-bold text-cyber-cyan mt-12 mb-4">
@@ -318,6 +341,37 @@ const navigateToBlog = () => {
 const navigateToContact = () => {
   window.dispatchEvent(new CustomEvent('navigate', { detail: 'contact' }))
 }
+
+// Meta-Tags für Social Media
+import { useHead } from '@unhead/vue'
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  useHead({
+    title: 'Vom Coder zum Architekten: Warum KI meine Arbeit nicht ersetzt, sondern erweitert | DEVmatrose',
+    meta: [
+      { name: 'description', content: 'Seit 1999 Entwickler, seit 2024 KI-Architekt. Wie mich die Arbeit mit Claude, GPT und Co. vom reinen Coder zum Software-Architekten gemacht hat – und warum das die Zukunft ist.' },
+      
+      // Open Graph
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: 'Vom Coder zum Architekten: Warum KI meine Arbeit erweitert' },
+      { property: 'og:description', content: 'Von 25 Jahren Entwicklung bis zur KI-gestützten Architektur: Wie Whitepaper, Workpaper und KI-Agenten meine Arbeitsweise revolutioniert haben.' },
+      { property: 'og:image', content: 'https://ogerly.github.io/devmatrose/images/blog/architekten-preview.png' },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
+      { property: 'og:url', content: 'https://ogerly.github.io/devmatrose/#blog' },
+      { property: 'article:published_time', content: '2025-12-02' },
+      { property: 'article:author', content: 'DEVmatrose' },
+      { property: 'article:section', content: 'KI & Architektur' },
+      
+      // Twitter Card
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: 'Vom Coder zum Architekten: Meine Reise mit KI' },
+      { name: 'twitter:description', content: 'Wie KI mich vom reinen Coder zum Software-Architekten gemacht hat – und warum das die Zukunft ist.' },
+      { name: 'twitter:image', content: 'https://ogerly.github.io/devmatrose/images/blog/architekten-preview.png' },
+    ]
+  })
+})
 </script>
 
 <style scoped>

@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@unhead/vue": "^2.0.19",
     "vue": "^3.4.15"
   },
   "devDependencies": {
