@@ -64,11 +64,38 @@
         </div>
       </div>
     </div>
+    
+    <!-- Blog Preview Section -->
+    <section class="container mx-auto px-4 py-16">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold terminal-font text-copper-orange mb-4">
+          <span class="glow-pulse">&gt; Latest_Blog_Posts_</span>
+        </h2>
+        <p class="text-xl text-off-white/70">
+          Deep Dives, Architektur-Entscheidungen und Best Practices
+        </p>
+      </div>
+      
+      <BlogList 
+        :limit="3"
+        @show-all="navigateToBlog"
+        @read-more="navigateToPost"
+      />
+    </section>
   </div>
 </template>
 
 <script setup>
-// Home Tab - Die Zentrale
+import BlogList from './blog/BlogList.vue'
+
+const navigateToBlog = () => {
+  window.location.hash = '#blog'
+}
+
+const navigateToPost = (post) => {
+  // Später: Detail-Ansicht
+  console.log('Navigate to post:', post.slug)
+}
 </script>
 
 <style scoped>

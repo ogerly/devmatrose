@@ -17,6 +17,7 @@
           <ul class="menu menu-horizontal px-1 terminal-font">
             <li><a @click="activeTab = 'home'" :class="{ 'text-copper-orange': activeTab === 'home' }">Home</a></li>
             <li><a @click="activeTab = 'work'" :class="{ 'text-copper-orange': activeTab === 'work' }">Arbeit</a></li>
+            <li><a @click="activeTab = 'blog'" :class="{ 'text-copper-orange': activeTab === 'blog' }">Blog</a></li>
             <li><a @click="activeTab = 'references'" :class="{ 'text-copper-orange': activeTab === 'references' }">Referenzen</a></li>
             <li><a @click="activeTab = 'contact'" :class="{ 'text-copper-orange': activeTab === 'contact' }">Kontakt</a></li>
           </ul>
@@ -32,6 +33,7 @@
             <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52 terminal-font">
               <li><a @click="activeTab = 'home'">Home</a></li>
               <li><a @click="activeTab = 'work'">Arbeit</a></li>
+              <li><a @click="activeTab = 'blog'">Blog</a></li>
               <li><a @click="activeTab = 'references'">Referenzen</a></li>
               <li><a @click="activeTab = 'contact'">Kontakt</a></li>
             </ul>
@@ -64,6 +66,7 @@ import { ref, computed } from 'vue'
 import SpiderwebCanvas from './components/SpiderwebCanvas.vue'
 import HomeTab from './components/HomeTab.vue'
 import WorkTab from './components/WorkTab.vue'
+import BlogTab from './components/BlogTab.vue'
 import ReferencesTab from './components/ReferencesTab.vue'
 import ContactTab from './components/ContactTab.vue'
 
@@ -73,6 +76,7 @@ const currentComponent = computed(() => {
   const components = {
     home: HomeTab,
     work: WorkTab,
+    blog: BlogTab,
     references: ReferencesTab,
     contact: ContactTab
   }
