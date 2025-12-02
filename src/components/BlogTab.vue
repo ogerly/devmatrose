@@ -55,7 +55,10 @@ const handleNavigate = (event) => {
 }
 
 const checkUrlForArticle = () => {
-  const urlParams = new URLSearchParams(window.location.hash.split('?')[1])
+  const hash = window.location.hash
+  
+  // Parse URL parameters from hash
+  const urlParams = new URLSearchParams(hash.split('?')[1])
   const articleSlug = urlParams.get('article')
   
   if (articleSlug === 'vom-code-zum-architekten') {
@@ -63,6 +66,10 @@ const checkUrlForArticle = () => {
       component: '02-12-25-Vom-Code-zum-Architekten',
       title: 'Vom Coder zum Architekten'
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  } else if (!articleSlug && hash.startsWith('#blog')) {
+    // No article parameter, show blog list
+    selectedPost.value = null
   }
 }
 

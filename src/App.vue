@@ -92,17 +92,39 @@ const handleNavigate = (event) => {
   const target = event.detail
   if (['home', 'work', 'blog', 'references', 'contact'].includes(target)) {
     activeTab.value = target
+    window.location.hash = `#${target}`
+  }
+}
+
+// Initialize tab from URL hash
+const initializeTabFromUrl = () => {
+  const hash = window.location.hash
+  
+  // Extract main tab from hash (e.g., #blog or #blog?article=...)
+  if (hash.startsWith('#blog')) {
+    activeTab.value = 'blog'
+  } else if (hash.startsWith('#work')) {
+    activeTab.value = 'work'
+  } else if (hash.startsWith('#references')) {
+    activeTab.value = 'references'
+  } else if (hash.startsWith('#contact')) {
+    activeTab.value = 'contact'
+  } else if (hash.startsWith('#home') || hash === '#') {
+    activeTab.value = 'home'
   }
 }
 
 onMounted(() => {
+  initializeTabFromUrl()  // Check URL on app start
   window.addEventListener('change-tab', handleChangeTab)
   window.addEventListener('navigate', handleNavigate)
+  window.addEventListener('hashchange', initializeTabFromUrl)
 })
 
 onUnmounted(() => {
   window.removeEventListener('change-tab', handleChangeTab)
   window.removeEventListener('navigate', handleNavigate)
+  window.removeEventListener('hashchange', initializeTabFromUrl)
 })
 </script>
 
