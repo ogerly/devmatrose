@@ -70,10 +70,14 @@ onMounted(() => {
   window.addEventListener('open-blog-post', handleOpenBlogPost)
   window.addEventListener('navigate', handleNavigate)
   checkUrlForArticle()
+  
+  // Watch for hash changes to handle navigation from static HTML pages
+  window.addEventListener('hashchange', checkUrlForArticle)
 })
 
 onUnmounted(() => {
   window.removeEventListener('open-blog-post', handleOpenBlogPost)
   window.removeEventListener('navigate', handleNavigate)
+  window.removeEventListener('hashchange', checkUrlForArticle)
 })
 </script>
