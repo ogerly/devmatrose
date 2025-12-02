@@ -3,7 +3,7 @@
     <!-- Preview Image -->
     <figure class="relative">
       <img 
-        :src="post.image" 
+        :src="getImageUrl(post.image)" 
         :alt="post.imageAlt" 
         class="h-48 w-full object-cover"
         loading="lazy"
@@ -69,6 +69,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['read-more'])
+
+const getImageUrl = (path) => {
+  if (!path) return ''
+  const basePath = import.meta.env.BASE_URL
+  return path.startsWith('/') ? `${basePath}${path.slice(1)}` : path
+}
 
 const formatDate = (dateString) => {
   const date = new Date(dateString)

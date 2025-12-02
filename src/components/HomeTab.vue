@@ -1,7 +1,9 @@
 <template>
-  <div class="hero min-h-screen">
-    <div class="hero-content text-center">
-      <div class="max-w-4xl">
+  <div>
+    <!-- Hero Section -->
+    <div class="hero min-h-screen">
+      <div class="hero-content text-center">
+        <div class="max-w-4xl">
         <!-- Logo / Title -->
         <div class="mb-8">
           <img src="/src/assets/logo-plastisch.png" alt="DEVmatrose Logo" class="h-32 w-32 mx-auto mb-6 glow-pulse" />
@@ -77,11 +79,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>
+        </div>
       </div>
     </div>
     
     <!-- Blog Preview Section -->
-    <section class="container mx-auto px-4 py-16">
+    <section class="container mx-auto px-4 py-16 bg-void">
       <div class="text-center mb-12">
         <h2 class="text-3xl md:text-4xl font-bold terminal-font text-copper-orange mb-4">
           <span class="glow-pulse">&gt; Latest_Blog_Posts_</span>
@@ -92,7 +95,8 @@
       </div>
       
       <BlogList 
-        :limit="3"
+        :limit="1"
+        :show-header="false"
         @show-all="navigateToBlog"
         @read-more="navigateToPost"
       />

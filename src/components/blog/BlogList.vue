@@ -81,7 +81,8 @@ const displayPosts = computed(() => {
 
 const loadPosts = async () => {
   try {
-    const response = await fetch('/data/blog-metadata.json')
+    const basePath = import.meta.env.BASE_URL
+    const response = await fetch(`${basePath}data/blog-metadata.json`)
     const data = await response.json()
     // Sortiere nach Datum (neueste zuerst)
     allPosts.value = data.posts.sort((a, b) => 

@@ -3,7 +3,7 @@
     <!-- Hero Image -->
     <div class="relative w-full h-96 overflow-hidden">
       <img 
-        src="/images/blog/architekten-hero.png" 
+        :src="heroImage" 
         alt="Software-Architektin visualisiert Whitepaper und Architektur-Entscheidungen"
         class="w-full h-full object-cover opacity-60"
       />
@@ -132,7 +132,7 @@
         <!-- Content Image -->
         <figure class="my-12">
           <img 
-            src="/images/blog/architekten-preview.png" 
+            :src="previewImage" 
             alt="Fraktale Software-Architektur mit Source of Truth im Zentrum"
             class="w-full rounded-lg border border-cyber-cyan/30 shadow-2xl shadow-cyber-cyan/20"
           />
@@ -319,7 +319,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useHead } from '@unhead/vue'
 
 const tags = ref([
@@ -330,6 +330,10 @@ const tags = ref([
   'Best Practices',
   'Whitepaper'
 ])
+
+const basePath = import.meta.env.BASE_URL
+const heroImage = computed(() => `${basePath}images/blog/architekten-hero.png`)
+const previewImage = computed(() => `${basePath}images/blog/architekten-preview.png`)
 
 const navigateToHome = () => {
   window.dispatchEvent(new CustomEvent('navigate', { detail: 'home' }))
