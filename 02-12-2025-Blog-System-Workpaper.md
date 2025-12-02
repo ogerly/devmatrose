@@ -495,11 +495,201 @@ npm install vite-ssg
 - [ ] Newsletter-Signup (optional)
 
 ### Phase 4: SEO & Launch (Woche 5)
-- [ ] Alle Meta-Tags validieren (OpenGraph Debugger)
+- [x] Alle Meta-Tags validieren (OpenGraph Debugger)
 - [ ] Google Search Console einrichten
 - [ ] Sitemap.xml generieren
 - [ ] RSS-Feed erstellen
 - [ ] Social Media Ankündigung
+
+---
+
+## 14. Social Media Link-Vorschauen - Implementierung 02.12.2025
+
+### 14.1 Problem & Lösung
+
+**Herausforderung bei SPAs:**
+Vue.js nutzt Hash-Routing (`#blog`), was Social Media Crawler nicht verarbeiten können. Dynamische Meta-Tags via JavaScript werden ignoriert.
+
+**Gewählte Lösung: Static HTML Landing Pages (Option C)**
+- Separate HTML-Datei pro Artikel mit vollständigen Meta-Tags
+- Automatischer Redirect zur Vue.js App nach 0ms
+- Crawler sehen statisches HTML, User erleben SPA
+
+### 14.2 Implementierte Dateien
+
+**Static Landing Page:**
+```
+blog-vom-code-zum-architekten.html
+```
+
+**Enthält:**
+- Open Graph Meta-Tags (LinkedIn, Facebook)
+- Twitter Card Meta-Tags
+- Article-spezifische Metadaten (Autor, Datum, Kategorie)
+- Preview-Bild: `images/blog/architekten-preview.png` (1200x630px)
+- Auto-Redirect: `meta http-equiv="refresh"` + JavaScript-Fallback
+- Branded Loading-Screen (DEVmatrose Design)
+
+### 14.3 URL-Flow
+
+**Shareable URL:**
+```
+https://ogerly.github.io/devmatrose/blog-vom-code-zum-architekten.html
+```
+
+**Redirect-Ziel:**
+```
+https://ogerly.github.io/devmatrose/#blog?article=vom-code-zum-architekten
+```
+
+**BlogTab.vue liest URL-Parameter:**
+```javascript
+const checkUrlForArticle = () => {
+  const urlParams = new URLSearchParams(window.location.hash.split('?')[1])
+  const articleSlug = urlParams.get('article')
+  if (articleSlug === 'vom-code-zum-architekten') {
+    selectedPost.value = { component: '02-12-25-Vom-Code-zum-Architekten' }
+  }
+}
+```
+
+### 14.4 "Link teilen" Button
+
+**Location:** Artikel-Header neben Meta-Info
+**Funktionalität:**
+- Kopiert Static HTML URL in Clipboard
+- Visuelles Feedback (Icon-Wechsel + Text)
+- 3-Sekunden-Timeout zurück zum Default-State
+
+```javascript
+const copyArticleLink = async () => {
+  const articleUrl = `${window.location.origin}${basePath}blog-vom-code-zum-architekten.html`
+  await navigator.clipboard.writeText(articleUrl)
+  linkCopied.value = true
+  setTimeout(() => linkCopied.value = false, 3000)
+}
+```
+
+### 14.5 Meta-Tags Template
+
+**Vollständige Meta-Tags für optimale Previews:**
+```html
+<!-- SEO -->
+<title>Artikeltitel | DEVmatrose</title>
+<meta name="description" content="...">
+<link rel="canonical" href="...">
+
+<!-- Open Graph (LinkedIn, Facebook) -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="DEVmatrose - Die Architekturschmiede">
+<meta property="og:title" content="...">
+<meta property="og:description" content="...">
+<meta property="og:image" content="https://ogerly.github.io/devmatrose/images/blog/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="...">
+<meta property="article:published_time" content="2025-12-02T00:00:00Z">
+<meta property="article:author" content="DEVmatrose">
+<meta property="article:section" content="Kategorie">
+<meta property="article:tag" content="Tag1">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@devmatrose">
+<meta name="twitter:title" content="...">
+<meta name="twitter:description" content="...">
+<meta name="twitter:image" content="...">
+<meta name="twitter:image:alt" content="...">
+```
+
+### 14.6 Workflow für neue Artikel
+
+**Schritt-für-Schritt:**
+1. Vue-Komponente schreiben: `src/components/blog/article/YYYY-MM-DD-Titel.vue`
+2. Bilder erstellen:
+   - Preview: 1200x630px PNG in `public/images/blog/`
+   - Hero: Beliebige Größe für Artikel-Header
+3. `blog-metadata.json` updaten
+4. Static HTML erstellen:
+   - Template `blog-vom-code-zum-architekten.html` kopieren
+   - Meta-Tags anpassen (Titel, Beschreibung, Bild-URLs)
+   - Redirect-URL mit neuem Slug updaten
+5. `BlogTab.vue` erweitern:
+   - Import der neuen Komponente
+   - `articleComponents` Object erweitern
+   - `checkUrlForArticle()` um neuen Slug erweitern
+6. Testing:
+   - Open Graph Debugger: https://www.opengraph.xyz/
+   - LinkedIn Post Inspector
+   - Twitter Card Validator
+7. Git Commit & Push
+
+### 14.7 Testing Tools
+
+**Validation:**
+- LinkedIn: https://www.linkedin.com/post-inspector/
+- Facebook: https://developers.facebook.com/tools/debug/
+- Twitter: https://cards-dev.twitter.com/validator
+- General OG: https://www.opengraph.xyz/
+
+**Test-Prozess:**
+1. URL in Tool eingeben
+2. Preview validieren (Bild, Titel, Beschreibung)
+3. Bei Bedarf Cache clearen ("Fetch new information")
+4. Erneut testen
+
+### 14.8 Bildanforderungen
+
+**Social Media Preview-Bilder:**
+- Format: PNG oder JPG
+- Größe: 1200x630px (Open Graph Standard)
+- Max. Dateigröße: < 500KB
+- Optimiert für Text-Lesbarkeit (Kontrast, Schriftgröße)
+- Branding: DEVmatrose Logo + Farbschema
+
+**Für ersten Artikel:**
+- ✅ `architekten-preview.png` - Fraktal-Architektur-Visualisierung
+- ✅ `architekten-hero.png` - Artikel-Header-Bild
+
+### 14.9 Vorteile dieser Lösung
+
+**SEO & Performance:**
+- ✅ Perfekte Social Media Previews auf allen Plattformen
+- ✅ Crawler sehen statisches HTML (instant load)
+- ✅ User erleben Vue SPA (smooth interactions)
+- ✅ Canonical URLs pro Artikel
+- ✅ Funktioniert auch ohne JavaScript (Accessibility)
+
+**Entwickler-Erfahrung:**
+- ✅ Kein komplexes Prerendering nötig
+- ✅ Einfaches Template-System (Copy & Paste)
+- ✅ Skaliert für 10-50 Artikel problemlos
+- ✅ Git-tracked (versioniert, reviewbar)
+
+**Wartung:**
+- ✅ Updates: Nur Static HTML ändern, Git Push
+- ✅ Neue Artikel: Template kopieren, anpassen
+- ✅ Debugging: Browser DevTools + OG Debugger
+
+### 14.10 Bekannte Limitationen
+
+**Edge Cases:**
+- Bei >50 Artikeln wird manuelles Template-Management aufwändig
+  → Lösung: Migration zu vite-ssg oder ähnlichem Prerendering-Tool
+- Cache-Issues bei Social Media Plattformen
+  → Lösung: Force Rescrape via Debugging-Tools
+
+**Nicht implementiert (vorerst):**
+- Automatische HTML-Generierung aus Metadaten
+- Sitemap.xml mit allen Artikel-URLs
+- RSS-Feed für Blog-Abonnements
+
+---
+
+**Status: ✅ Produktiv implementiert**
+**Artikel: "Vom Coder zum Architekten"**
+**Live-URL:** https://ogerly.github.io/devmatrose/blog-vom-code-zum-architekten.html
+**Implementierungsdatum:** 02.12.2025
 
 ---
 

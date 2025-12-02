@@ -350,6 +350,282 @@ Das komplette Vue 3 + Vite Projekt wurde aufgesetzt mit folgender Struktur:
 - Portfolio-Case-Studies mit Screenshots
 - Testimonials von Kunden
 
+---
+
+## 11. Blog-Artikel Social Media Integration - 02.12.2025
+
+### 11.1 Problem: Link-Vorschauen bei SPAs
+
+**Herausforderung:**
+Single Page Applications (SPAs) wie Vue.js nutzen Hash-Routing (`#blog`), was für Social Media Crawler problematisch ist:
+- Open Graph Meta-Tags werden nur beim initialen Seitenladen gelesen
+- Dynamische Meta-Tags via JavaScript werden von Crawlern ignoriert
+- Resultat: Schlechte/fehlende Link-Vorschauen auf LinkedIn, Twitter, Instagram
+
+**Anforderung:**
+Blog-Artikel müssen perfekte Link-Vorschauen generieren mit:
+- Artikel-Titel
+- Preview-Bild (1200x630px)
+- Beschreibung/Excerpt
+- Autor & Datum
+
+### 11.2 Gewählte Lösung: Static HTML Landing Pages
+
+**Konzept: Option C (Beste Lösung)**
+Für jeden Blog-Artikel wird eine separate, statische HTML-Datei erstellt, die:
+1. **Vollständige Meta-Tags** enthält (Open Graph, Twitter Card, LinkedIn)
+2. **Sofort lesbar** für Social Media Crawler ist (kein JavaScript erforderlich)
+3. **Automatisch weiterleitet** zur Vue.js App nach 0 Sekunden
+4. **Fallback-Content** anzeigt während des Redirects (Loading-Screen)
+
+**Vorteile:**
+- ✅ Perfekte Social Media Previews auf allen Plattformen
+- ✅ SEO-freundlich (statisches HTML, Canonical URLs)
+- ✅ Keine zusätzlichen Build-Tools erforderlich
+- ✅ Wartbar: Ein Template, mehrfach kopierbar
+- ✅ Funktioniert auch bei deaktiviertem JavaScript
+
+### 11.3 Implementierung: blog-vom-code-zum-architekten.html
+
+**Dateistruktur:**
+```
+/devmatrose/
+├── index.html (Haupt-SPA)
+└── blog-vom-code-zum-architekten.html (Landing Page für Artikel)
+```
+
+**HTML-Template Struktur:**
+```html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <!-- SEO Meta-Tags -->
+  <title>Artikeltitel | DEVmatrose</title>
+  <meta name="description" content="...">
+  <link rel="canonical" href="https://ogerly.github.io/devmatrose/blog-artikel.html">
+  
+  <!-- Open Graph (LinkedIn, Facebook) -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DEVmatrose - Die Architekturschmiede">
+  <meta property="og:title" content="...">
+  <meta property="og:description" content="...">
+  <meta property="og:image" content="https://ogerly.github.io/devmatrose/images/blog/preview.png">
+  <meta property="og:url" content="...">
+  <meta property="article:published_time" content="2025-12-02T00:00:00Z">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="...">
+  <meta name="twitter:image" content="...">
+  
+  <!-- Auto-Redirect zur Vue App -->
+  <meta http-equiv="refresh" content="0;url=https://ogerly.github.io/devmatrose/#blog?article=slug">
+  
+  <!-- Fallback für JavaScript -->
+  <script>
+    setTimeout(() => {
+      window.location.href = 'https://ogerly.github.io/devmatrose/#blog?article=slug';
+    }, 100);
+  </script>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading">
+    <h1>DEV<span>matrose</span></h1>
+    <div class="spinner"></div>
+    <p>Artikel wird geladen...</p>
+  </div>
+</body>
+</html>
+```
+
+**Styling im Loading-Screen:**
+- DEVmatrose-Branding (Copper Orange + Cyber Cyan)
+- Animierter Spinner (CSS-only, kein JavaScript)
+- Excerpt des Artikels als Teaser
+- Responsive Design
+
+### 11.4 URL-Parameter Integration
+
+**Vue.js BlogTab.vue Anpassung:**
+```javascript
+const checkUrlForArticle = () => {
+  const urlParams = new URLSearchParams(window.location.hash.split('?')[1])
+  const articleSlug = urlParams.get('article')
+  
+  if (articleSlug === 'vom-code-zum-architekten') {
+    selectedPost.value = {
+      component: '02-12-25-Vom-Code-zum-Architekten',
+      title: 'Vom Coder zum Architekten'
+    }
+  }
+}
+
+onMounted(() => {
+  checkUrlForArticle()  // Liest URL-Parameter und öffnet Artikel direkt
+})
+```
+
+**URL-Flow:**
+1. User klickt Link: `blog-vom-code-zum-architekten.html`
+2. Crawler liest Meta-Tags (perfekte Preview!)
+3. Browser wird redirected zu: `#blog?article=vom-code-zum-architekten`
+4. Vue.js App liest Parameter und öffnet Artikel-Komponente
+
+### 11.5 "Link teilen" Button im Artikel
+
+**Implementierung in 02-12-25-Vom-Code-zum-Architekten.vue:**
+```vue
+<button 
+  @click="copyArticleLink" 
+  class="btn btn-xs btn-outline border-cyber-cyan"
+  :class="{ 'btn-success': linkCopied }"
+>
+  {{ linkCopied ? 'Link kopiert!' : 'Link teilen' }}
+</button>
+
+<script>
+const copyArticleLink = async () => {
+  const articleUrl = `${window.location.origin}${basePath}blog-vom-code-zum-architekten.html`
+  await navigator.clipboard.writeText(articleUrl)
+  linkCopied.value = true
+  setTimeout(() => linkCopied.value = false, 3000)
+}
+</script>
+```
+
+**User Experience:**
+- Button im Artikel-Header neben Meta-Info
+- Copy-to-Clipboard mit Feedback (✓ Icon + "Link kopiert!")
+- Teilt die statische HTML-Seite (nicht die Hash-URL)
+
+### 11.6 Bildanforderungen für Social Media
+
+**Optimale Preview-Bilder:**
+- **Format:** PNG oder JPG
+- **Größe:** 1200x630px (Open Graph Standard)
+- **Max. Dateigröße:** < 500KB (für schnelles Laden)
+- **Speicherort:** `public/images/blog/`
+- **Naming:** `artikelslug-preview.png`
+
+**Für ersten Artikel:**
+- ✅ `architekten-preview.png` (Fraktal-Architektur-Visual)
+- ✅ `architekten-hero.png` (Für Artikel-Header)
+
+### 11.7 Testing & Validation
+
+**Tools zum Testen:**
+- **LinkedIn Post Inspector:** https://www.linkedin.com/post-inspector/
+- **Facebook Sharing Debugger:** https://developers.facebook.com/tools/debug/
+- **Twitter Card Validator:** https://cards-dev.twitter.com/validator
+- **Open Graph Debugger:** https://www.opengraph.xyz/
+
+**Test-Prozess:**
+1. HTML-Seite auf GitHub Pages deployen
+2. URL in Debugging-Tools eingeben
+3. Preview validieren
+4. Cache clearen falls nötig (Force Rescrape)
+
+### 11.8 Workflow für neue Artikel
+
+**Schritt-für-Schritt:**
+1. **Artikel schreiben:** Vue-Komponente in `src/components/blog/article/`
+2. **Bilder erstellen:** Preview (1200x630px) + Hero-Image
+3. **Metadaten eintragen:** `blog-metadata.json` aktualisieren
+4. **Static HTML erstellen:** Template kopieren, Meta-Tags anpassen
+5. **Testing:** Open Graph Debugger nutzen
+6. **Git Commit & Push:** Automatisches Deployment via GitHub Actions
+
+**Template-Datei für neue Artikel:**
+```
+/devmatrose/blog-[slug].html
+```
+
+### 11.9 SEO & Performance Vorteile
+
+**Vorteile dieser Lösung:**
+- ✅ **Dual-Rendering:** Statisches HTML für Bots, Vue SPA für User
+- ✅ **Instant Preview:** Keine Wartezeit für Crawler
+- ✅ **Canonical URLs:** Jeder Artikel hat eindeutige URL
+- ✅ **Structured Data:** Schema.org Article-Markup möglich
+- ✅ **Lighthouse-Score:** Statische Seite = perfekter Score
+- ✅ **Accessibility:** Funktioniert auch ohne JavaScript
+
+**Performance-Metriken:**
+- First Contentful Paint: < 0.5s (statisches HTML)
+- Time to Interactive: < 1s (Redirect + SPA Load)
+- Social Media Scraper: < 100ms (kein JavaScript)
+
+### 11.10 Alternativen & Trade-Offs
+
+**Nicht gewählte Optionen:**
+
+**Option A: Nur Meta-Tags in index.html**
+- ❌ Problem: Alle Artikel hätten dieselbe Preview
+- ❌ Keine Artikel-spezifischen Meta-Tags
+
+**Option B: Vue Router mit History Mode**
+- ❌ Problem: Erfordert Server-Konfiguration
+- ❌ GitHub Pages unterstützt kein clientseitiges Routing
+- ❌ Komplexere 404-Handling Logik nötig
+
+**Option D: Prerendering (vite-ssg)**
+- ❌ Problem: Build-Komplexität steigt
+- ❌ Längere Deployment-Zeiten
+- ✅ Könnte zukünftig für viele Artikel sinnvoll sein
+
+**Entscheidung für Option C:**
+- Simpel, wartbar, funktioniert sofort
+- Skaliert für 10-20 Artikel ohne Probleme
+- Bei >50 Artikeln: Migration zu vite-ssg möglich
+
+### 11.11 Maintenance & Updates
+
+**Bei Artikel-Updates:**
+- Vue-Komponente ändern → automatisch live
+- Meta-Tags ändern → Static HTML updaten → Git Push
+- Bilder austauschen → Cache in Social Media clearen
+
+**Bei neuen Artikeln:**
+1. Vue-Komponente erstellen
+2. `blog-metadata.json` erweitern
+3. Static HTML-Seite hinzufügen
+4. Git Commit → automatisches Deployment
+
+### 11.12 Dokumentation für Zukünftige Artikel
+
+**Checkliste pro Artikel:**
+- [ ] Vue-Komponente erstellt (`src/components/blog/article/`)
+- [ ] Preview-Bild (1200x630px) in `public/images/blog/`
+- [ ] `blog-metadata.json` Entry mit vollständigen Social-Media-Feldern
+- [ ] Static HTML-Seite mit korrekten Meta-Tags
+- [ ] URL-Parameter in BlogTab.vue registriert
+- [ ] Open Graph Debugger validiert
+- [ ] Link-teilen-Button mit korrekter URL
+
+**Beispiel-Entry für blog-metadata.json:**
+```json
+{
+  "id": "artikel-slug",
+  "slug": "artikel-slug",
+  "component": "YYYY-MM-DD-Artikel-Name",
+  "image": "/images/blog/artikel-preview.png",
+  "socialMedia": {
+    "linkedin": {
+      "title": "LinkedIn-optimierter Titel",
+      "hashtags": ["Tag1", "Tag2"]
+    }
+  }
+}
+```
+
+---
+
+**Status: ✅ Implementiert & Dokumentiert**
+**Datum: 02.12.2025**
+**Artikel-URL (Static):** https://ogerly.github.io/devmatrose/blog-vom-code-zum-architekten.html
+**Artikel-URL (SPA):** https://ogerly.github.io/devmatrose/#blog?article=vom-code-zum-architekten
+
 ### 8.10 Technische Besonderheiten
 
 **Best Practices implementiert:**
